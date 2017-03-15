@@ -2,9 +2,11 @@
 #include "gmock/gmock.h"
 
 #include "fileutils.h"
+#include "ioc.h"
 #include "predicates.h"
 
 #include <QString>
+
 
 TEST(FileUtils, CalculateSha256) {
     FileUtils utils;
@@ -53,4 +55,27 @@ TEST(Predicates, MapList) {
     ASSERT_EQ(sizes[1], 3);
     ASSERT_EQ(sizes[2], 3);
     ASSERT_EQ(sizes[3], 5);
+}
+
+TEST(ioc, SimpleProvider) {
+    using namespace ioc;
+    Provider<FileUtils> utilsProvider;
+    FileUtils* utils = utilsProvider.get();
+
+    ASSERT_TRUE(utils != NULL);
+    ASSERT_EQ(utils, utilsProvider.get());
+    ASSERT_TRUE(dynamic_cast<FileUtils*>(utils));
+}
+
+TEST(ioc, LifeCycleProvider) {
+    using namespace ioc;
+    FileUtils* myUtils = new FileUtils;
+    Provider<FileUtils> utilsProvider(
+                [=] () { return myUtils; },
+                [] (FileUtils* utils) { delete utils; }
+    );
+    FileUtils* utils = utilsProvider.get();
+
+    ASSERT_TRUE(utils != NULL);
+    ASSERT_EQ(utils, myUtils);
 }

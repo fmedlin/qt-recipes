@@ -1,6 +1,6 @@
 include(gtest_dependency.pri)
 
-QT += core
+QT += core network
 QT -= gui
 
 TARGET = QtRecipes
@@ -28,7 +28,8 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs depr
 
 HEADERS += \
     fileutils.h \
-    predicates.h
+    predicates.h \
+    ioc.h
 
 DISTFILES += \
     hello.txt
